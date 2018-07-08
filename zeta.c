@@ -212,8 +212,8 @@ void zeta(string S, int Z[]){
 // Driver program
 int main()
 {
-string text = "ababababa";
-    string pattern = "ababa";
+string text = "aasbaababcacbabcabcacbabcabaabababfaba";
+    string pattern = "abcacbabcaba";
     search(text, pattern);
     return 0;
 }

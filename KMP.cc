@@ -1,8 +1,8 @@
 
-#ifndef DEBUG
+/*#ifndef DEBUG
 #define DEBUG 
 #endif
-
+*/
 #include<iostream>
 #include <vector>
 #include <algorithm> // std::min_element
@@ -157,8 +157,8 @@ void KMP(string T,  string P){
 			h += SP[k]+1;
 			k = SP[k];
 		}else{
-			h += SP[k];
-			k = SP[k];
+			h += n - SP[k-1];
+			k = SP[k-1];
 		}
 		
 	}
@@ -171,8 +171,8 @@ int main()
     //string text = "michele michele michelle lelle rene irene imene michele ene michiremich"; 
     //string pattern = "abcdabcdfabcdabcdf";
 
-    string text = "ababcabcabca";
-    string pattern = "abcabc";
+    string text = "aasbaababcacbabcabcacbabcabaabababfaba";
+    string pattern = "abcacbabcaba";
     KMP(text, pattern);
 
     for (int i = 0; i < text.length(); ++i)

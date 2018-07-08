@@ -1,8 +1,8 @@
 
-#ifndef DEBUG
+/*#ifndef DEBUG
 #define DEBUG 
 #endif
-
+*/
 #include<iostream>
 #include <vector>
 #include <algorithm> // std::min_element
@@ -83,8 +83,7 @@ void search(string T, string P){
 	}
 
 
-
-		int h=0;//posizione sul testo
+	int h=0;//posizione sul testo
 	int k=0;//posizione sul pattern			
 	while(h<=m-n)
 	{
@@ -167,19 +166,16 @@ void search(string T, string P){
 			h += SP[k]+1;
 			k = SP[k];
 		}else{
-			h += SP[n-1]+1;
-			k = 0;
-		}
-		
-	
-
+			h += n - SP[k-1];
+			k = SP[k-1];
+		}	
+	}
 }
 
-}
 // Driver program
 int main()
 {
-    string text = "ababababa";
+    string text = "ababacbabababa";
     string pattern = "ababa";
     search(text, pattern);
     return 0;
