@@ -9,72 +9,82 @@
 #include <iterator>  // std::begin, std::end
 using namespace std;
 
+#include "zeta.h"
 
-/*Versione Zantoni*/
-void KMP(string T,  string P){
+
+
+void setUpSP(string P , int SP[]){
+
+	for (int i = 0; i < P.length(); ++i)
+	{
+		/* code */
+		SP[i]=0;
+	}
+
+	int Z[P.length()];
 	
+	zeta(P, Z);
+
+	/*Z caclcolata*/
+
+	/*
+	for (int i = 0; i < P.length(); ++i)
+	{
+		cout << i << " -> " << Z[i] << endl;
+	}*/
+
+//versione non corretta (non lineare)
+/*	for (int j = P.length() - 1 ; j>=0; --j)
+	{
+		
+		for (int e = 1; e <= Z[j]; ++e)
+		{
+			SP[j+e-1]=e;
+		}
+
+	}
+*/
+
+	/* SP calcolato.*/
+
+	/*il costo deve essere per forza lineare? non così...*/
+
+for (int j =0 ; j<P.length(); ++j)
+	{
+		
+		int e = 1;
+			while( e <= Z[j] && SP[j+e-1]==0){
+				SP[j+e-1]=e;
+				e++;
+			}
+		
+
+	}
+
+}
+
+
+
+
+void search(string T, string P){
 
 	int m = T.length();
 	int n = P.length();
 
-	int SP[n];
-	int i, j =0;
+	int SP[P.length()];
+	setUpSP(P, SP);
 
-	for (int i = 0; i < n; ++i)
+
+
+
+	for (int i = 0; i < P.length(); ++i)
 	{
-
-		/*
-						   x              x?=y                    y
-		+----------------------------------------------------------------+
-		+-----------------+o                    +----------------+i
-				gamma      sp(i-1)=|gamma|              gamma
-
-		*/
-		
-		//j==i-1
-
-		//poi... j'=sp(i-1)-1
-
-
-		/*
-						   x                                      y
-		+----------------------------------------------------------------+
-		+-----------------+                     +----------------+i
-		                                                         j
-				gamma      sp(i-1)=|gamma|              gamma
-
-			 x'                        x'?=y                      y			  
-		+-----------------+                     +----------------+i
-		+---+o        +---+                     +---+o       +---+                                    
-			 j'
-		gamma'            
-		*/
-
-	/*  ESEMPIO:
-
-		abac.....abab
-
-		c!=a quindi cerco il amssimo prefisso/suffisso in aba nella speranza che sia seguito  da P[i] = b */
-		
-
-
-		j=i-1;
-		SP[i]=0;
-		while(P[SP[j]] != P[i] && j>0) j=SP[j]-1;
-
-		if(j>=0 && P[i]==P[SP[j]]) SP[i]=SP[j]+1;
-
+		cout << i << "- " << P[i] << " - "  << SP[i] << " \n";
 	}
 
-	#ifdef DEBUG
-	for (int i = 0; i < n; ++i)
-	{
-		cout <<P[i] <<  " -> " << SP[i] << endl;
 
-	}
-	#endif
 
-	int h=0;//posizione sul testo
+		int h=0;//posizione sul testo
 	int k=0;//posizione sul pattern			
 	while(h<=m-n)
 	{
@@ -157,28 +167,20 @@ void KMP(string T,  string P){
 			h += SP[k]+1;
 			k = SP[k];
 		}else{
-			h += SP[k];
-			k = SP[k];
+			h += SP[n-1]+1;
+			k = 0;
 		}
 		
-	}
+	
 
 }
 
+}
 // Driver program
 int main()
 {
-    //string text = "michele michele michelle lelle rene irene imene michele ene michiremich"; 
-    //string pattern = "abcdabcdfabcdabcdf";
-
-    string text = "ababcabcabca";
-    string pattern = "abcabc";
-    KMP(text, pattern);
-
-    for (int i = 0; i < text.length(); ++i)
-    {
-    	cout << i << "--->"<< text[i]<<" "<<endl;
-    }
-    cout<<endl;
+    string text = "ababababa";
+    string pattern = "ababa";
+    search(text, pattern);
     return 0;
 }

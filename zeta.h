@@ -1,48 +1,8 @@
 
 
-/*#ifndef DEBUG
-#define DEBUG value
-#endif*/
-
-#include<iostream>
-using namespace std;
- 
-
 
 void zeta(string S, int Z[]);
- 
-// prints all occurrences of pattern in text using Z algo
-void search(string text, string pattern)
-{
-    // Create concatenated string "P$T"
-    string concat = pattern + "$" + text;
-    int l = concat.length();
 
-    cout << concat << endl;
- 
-    // Construct Z array
-    int Z[l];
-    zeta(concat, Z);
- 
-    // now looping through Z array for matching condition
-    for (int i = 0; i < l; ++i)
-    {
-        // if Z[i] (matched region) is equal to pattern
-        // length we got the pattern
-        if (Z[i] >= pattern.length())
-            cout << "Pattern found at index "
-                << i << " of length " << Z[i] << endl;
-    }
-
-    for (int i = 0; i < l; ++i)
-    {
-    	/* code */
-
-    	cout << i << " - " << concat[i] << " - "  << Z[i] << " \n";
-    }
-
-}
- 	
 
 void zeta(string S, int Z[]){
 
@@ -207,13 +167,4 @@ void zeta(string S, int Z[]){
 		}
 	}
 
-}
-
-// Driver program
-int main()
-{
-string text = "ababababa";
-    string pattern = "ababa";
-    search(text, pattern);
-    return 0;
 }
