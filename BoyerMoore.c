@@ -11,7 +11,6 @@
 #define SIGMA 7
 #endif
 
-
 #include <algorithm>
 #include <iostream>
 #include <string>
@@ -32,25 +31,41 @@ void reverse_array( int array[], int arraylength )
 }
 
 
-void setUpSGCR(string P, int Z[] , int SGCR[]){
+void setUpSGSR(string P, int Z[] , int SGSR[]){
 
 	for (int i = 0; i < P.length(); ++i)
 	{
 		/* code */
-		SGCR[i]=0;
+		SGSR[i]=-99;
 	}
 
-	/* SP calcolato.*/
-
-	/*il costo deve essere per forza lineare? non così...*/
-
-for (int j =0 ; j<P.length(); ++j)
+	int inc[P.length()];
+	for (int i = 0; i < P.length(); ++i)
 	{
+		inc[i]=0;
+	}
 
-		SGCR[P.length()-Z[j]]=j;//sbagliato
-
+	for (int i = P.length()-1; i>=1; --i)
+	{
+		if(Z[i]>0){
+			SGSR[Z[i]+inc[Z[i]]] = i+Z[i];
+			inc[Z[i]]+=i;
+		}
 
 	}
+	for (int i = P.length()-1; i>=1; --i)
+	{
+		
+		cout << "i = "<<i << " i+Z[i]="<< i+Z[i] << endl;
+
+	}
+	for (int i = P.length()-1; i>=0; --i)
+	{
+		
+		cout << "SGSR["<<i<<	"] = "<<SGSR[i] << endl;
+
+	}
+
 
 }
 
@@ -131,21 +146,32 @@ void searchBM(string text, string pattern)
     int Z[l];//per la sgsr
     zeta(pattern, Z);
 
-    reverse_array(Z,l);
-    std::reverse(pattern.begin(),pattern.end());
-    
+    for (int i = 0; i < l; ++i)
+    {
+    	cout << i << " -zeta - "<<pattern[i]<<" -> " << Z[i]<< endl;
+    }
+
+
+    int SGSR[l];//per la sgsr
+	setUpSGSR(pattern,Z,SGSR);
+
+
 
     for (int i = 0; i < l; ++i)
       	cout << i << " - " << pattern[i] << " - "  << Z[i] << " \n";
 
 
-    int SGCR[l];//per la sgsr
 
-	setUpSGCR(pattern,Z,SGCR);
+	cout << endl;
 
 	for (int i = 0; i < l; ++i)
-      	cout << i << " * " << pattern[i] << " - "  << SGCR[i] << " \n";
+      	cout << i << " * " << pattern[i] << " - "  << SGSR[i] << " \n";
 
+
+
+    reverse_array(Z,l);
+    std::reverse(pattern.begin(),pattern.end());
+    
 
 	int h=pattern.length()-1;
 
@@ -199,7 +225,7 @@ void searchBM(string text, string pattern)
 
     	int a = bcr[i][toId(text[h])];
 
-    	int Zi= SGCR[i];
+    	//int Zi= SGSR[i];
 
 
     	if(a >=0 && i>=0){//se a=-1 significa che text[h] non occorre in P, se i =-1 significa che in questo turno ho trovato il pattern (NON HA SENSO APPLICARE LA bcr)
@@ -221,7 +247,7 @@ void searchBM(string text, string pattern)
 int main()
 {
 	string text = "aaaaaaaafffffffffffaaaaaaaaaaaaaafffffffffffaaaaaaaaaaaaaaffffffffffffffffaaaaaaaaaaaaaaafffafafafafafafafafafaf";
-    string pattern = "abafbaabbafbaab";
+    string pattern = "abcabcabcdabc";
 
     cout << text << endl;
     

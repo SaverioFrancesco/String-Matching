@@ -1,8 +1,16 @@
-
-/*#ifndef DEBUG
+/*
+#ifndef DEBUG
 #define DEBUG 
 #endif
+
 */
+
+#ifndef DEBUG1
+#define DEBUG1
+#endif
+
+
+
 #include<iostream>
 #include <vector>
 #include <algorithm> // std::min_element
@@ -66,10 +74,10 @@ void KMP(string T,  string P){
 
 	}
 
-	#ifdef DEBUG
+	#ifdef DEBUG1
 	for (int i = 0; i < n; ++i)
 	{
-		cout <<P[i] <<  " -> " << SP[i] << endl;
+		cout <<i <<" > "<<P[i] <<  " -> " << SP[i] << endl;
 
 	}
 	#endif
@@ -172,13 +180,13 @@ int main()
     //string pattern = "abcdabcdfabcdabcdf";
 
     string text = "aasbaababcacbabcabcacbabcabaabababfaba";
-    string pattern = "abcacbabcaba";
+    string pattern = "ababababa";
     KMP(text, pattern);
 
-    for (int i = 0; i < text.length(); ++i)
+   /* for (int i = 0; i < text.length(); ++i)
     {
     	cout << i << "--->"<< text[i]<<" "<<endl;
-    }
+    }*/
     cout<<endl;
     return 0;
 }

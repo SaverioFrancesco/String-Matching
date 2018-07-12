@@ -58,10 +58,67 @@ for (int j =0 ; j<P.length(); ++j)
 				e++;
 			}
 		
-
 	}
 
 }
+
+
+void setUpSP_Gusf(string P , int SP[]){
+
+	int _SP[P.length()];
+
+	for (int i = 0; i < P.length(); ++i)
+	{
+		/* code */
+		SP[0]=_SP[i]=0;
+	}
+
+	int Z[P.length()];
+	
+	zeta(P, Z);
+
+	/*Z caclcolata*/
+
+	
+	for (int i = 0; i < P.length(); ++i)
+	{
+		cout << i << " -> " << Z[i] << endl;
+	}
+	cout << endl;
+
+	/* SP calcolato.*/
+
+	/*il costo deve essere per forza lineare? non così...*/
+
+	for (int  j= P.length()-1; j>=1; --j)
+	{
+
+		int i=j+Z[j]-1;
+		_SP[i]=i-j+1;
+	}
+
+
+
+	for (int i = 0; i < P.length(); ++i)
+		{
+			cout << i << " -> _SP  " << _SP[i] << endl;
+		}
+
+
+	SP[P.length()-1]=_SP[P.length()-1];
+
+
+	for (int i = P.length()-2; i>=1; --i)
+	{
+
+		SP[i]= std::max(SP[i+1]-1, _SP[i]);
+
+	}
+
+
+}
+
+
 
 
 
@@ -72,7 +129,7 @@ void search(string T, string P){
 	int n = P.length();
 
 	int SP[P.length()];
-	setUpSP(P, SP);
+	setUpSP_Bur(P, SP);
 
 
 
@@ -176,7 +233,7 @@ void search(string T, string P){
 int main()
 {
     string text = "ababacbabababa";
-    string pattern = "ababa";
+    string pattern = "abbabbaa";
     search(text, pattern);
     return 0;
 }
