@@ -3,7 +3,6 @@
 
 void zeta(string S, int Z[]);
 
-
 void zeta(string S, int Z[]){
 
 	int n = S.length();
@@ -121,7 +120,7 @@ void zeta(string S, int Z[]){
 				cout  << "Li ricomincio fra k+1 = "<< k+Z[k]+1<< "e i+Z[i]+1 =" << i+Z[i]+1 << endl;
 				#endif
 				
-				while(S[start1+jj] == S[start2+jj]) {
+				while(S[start1+jj] == S[start2+jj] && start1+jj < S.length()) {
 					Z[i]++;
 					jj++;
 				}
@@ -147,19 +146,14 @@ void zeta(string S, int Z[]){
 
 			int j=0;
 
-			while(S[i+j]==S[j]){
-
-				Z[i]++;
-				j++;
-			}
+			while(S[i+j]==S[j])	j++;
 
 			if(j>0){
 				//se siamo andati almeno un passo avanti:
-				
 				#ifdef DEBUG
 				cout << "siamo andati avanti con i confronti per j =" << j << " posizioni." << endl;				
 				#endif
-				
+				Z[i]+=j;
 				r=i+Z[i]-1;
 				l=i;
 			}

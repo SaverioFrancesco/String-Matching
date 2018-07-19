@@ -1,8 +1,8 @@
-
+/*
 #ifndef DEBUG1
 #define DEBUG1 
 #endif
-
+*/
 #ifndef ALFABETO
 #define ALFABETO "abcdefg"
 #endif
@@ -16,7 +16,8 @@
 #include <string>
 using namespace std;
  
-#include "zeta.h"
+
+#include "sp.h"
 
 void searchBM(string text, string pattern);
 
@@ -31,43 +32,7 @@ void reverse_array( int array[], int arraylength )
 }
 
 
-void setUpSGSR(string P, int Z[] , int SGSR[]){
 
-	for (int i = 0; i < P.length(); ++i)
-	{
-		/* code */
-		SGSR[i]=-99;
-	}
-
-	int inc[P.length()];
-	for (int i = 0; i < P.length(); ++i)
-	{
-		inc[i]=0;
-	}
-
-	for (int i = P.length()-1; i>=1; --i)
-	{
-		if(Z[i]>0){
-			SGSR[Z[i]+inc[Z[i]]] = i+Z[i];
-			inc[Z[i]]+=i;
-		}
-
-	}
-	for (int i = P.length()-1; i>=1; --i)
-	{
-		
-		cout << "i = "<<i << " i+Z[i]="<< i+Z[i] << endl;
-
-	}
-	for (int i = P.length()-1; i>=0; --i)
-	{
-		
-		cout << "SGSR["<<i<<	"] = "<<SGSR[i] << endl;
-
-	}
-
-
-}
 
 void calcoloBCR(string P , int bcr[][SIGMA] , string Sigma){
 
@@ -129,49 +94,57 @@ void searchBM(string text, string pattern)
 
 
 {
-	cout << toId('a')<<endl;
 
     int l = pattern.length();
 
-    cout << pattern << endl;
+   // cout << pattern << endl;
 
 
     int bcr[l][ SIGMA ];
 
+    /*Calcolo Bad charapter Rule*/
     calcoloBCR(pattern,bcr, ALFABETO ); 
 
+
+    /*Calcolo GoodSuffix Rule*/
+
     std::reverse(pattern.begin(),pattern.end());
-    
-    // Construct Z array
-    int Z[l];//per la sgsr
-    zeta(pattern, Z);
+ 
+    int RSP[l];
+
+	setUpSP_Gusf( pattern , RSP );
+
+
+/*    for (int i = 0; i < l; ++i)
+      	cout << i << " - " << pattern[i] << " RSP - "  << RSP[i] << " \n";
+*/
+
+	reverse_array(RSP,l);
+    std::reverse(pattern.begin(),pattern.end());
 
     for (int i = 0; i < l; ++i)
     {
-    	cout << i << " -zeta - "<<pattern[i]<<" -> " << Z[i]<< endl;
+    	RSP[i] = l-RSP[i];
+    }
+    
+    int _RSP[l];
+    for (int i = 0; i < l; ++i)
+    {
+    	/*init*/
+    	_RSP[i]=-1;
+    }
+    for (int i = 0; i < l; ++i)
+    {
+    	_RSP[RSP[i]]=i;
     }
 
-
-    int SGSR[l];//per la sgsr
-	setUpSGSR(pattern,Z,SGSR);
-
-
-
-    for (int i = 0; i < l; ++i)
-      	cout << i << " - " << pattern[i] << " - "  << Z[i] << " \n";
+  /*  for (int i = 0; i < l; ++i)
+      	cout << i << " - " << pattern[i] << " -  RSP_Reversed ->"  << _RSP[i] << " ///// " <<RSP[i] << " \n";
+*/
 
 
+      //BoyerMoore
 
-	cout << endl;
-
-	for (int i = 0; i < l; ++i)
-      	cout << i << " * " << pattern[i] << " - "  << SGSR[i] << " \n";
-
-
-
-    reverse_array(Z,l);
-    std::reverse(pattern.begin(),pattern.end());
-    
 
 	int h=pattern.length()-1;
 
@@ -184,9 +157,8 @@ void searchBM(string text, string pattern)
 
 		int exi =0;		
 
-		    //	cout << " h = " << h << " i = " << i  << " j = "<< j << endl;
-
-	cout << text << endl;
+	
+		cout << text << endl;
 
 		for (int i = 0; i < +1+j-pattern.length(); ++i)
 		{
@@ -198,17 +170,15 @@ void searchBM(string text, string pattern)
 		}
 		cout << endl;
 
+    	int foundOcc=false;
+
     	while (exi==0 && i>=0)
     	{
     		if(pattern[i]==text[h]){
 
-    			//cout << "confronto "<< pattern[i]<< " con " << text[h]<< "  " << (pattern[i]==text[h]) <<  endl;
-    			
     			if( i==0){
-    			//cout << "Ho trovato "<< i  << endl;
- //   			cout << "***h = " << h << " i = " << i  << " j = "<< j << endl;
     			cout << "Occorrenza " << h <<endl;
-
+    			foundOcc=true;
     			}
 
     			h--;
@@ -223,37 +193,60 @@ void searchBM(string text, string pattern)
     		}
     	}
 
-    	int a = bcr[i][toId(text[h])];
-
-    	//int Zi= SGSR[i];
-
-
-    	if(a >=0 && i>=0){//se a=-1 significa che text[h] non occorre in P, se i =-1 significa che in questo turno ho trovato il pattern (NON HA SENSO APPLICARE LA bcr)
-    		//cout<< "BCR a ="<< a<< " i = " << i <<"\n";
-		j += i - a;
-		h=j;			
-		}else{
-			h=j+1;
-		}
-    	i = pattern.length()-1;
+    	int bc = bcr[i][toId(text[h])];
+		if(i<0) bc =-1;//per prevenire bug     	
+    	int gs=_RSP[i+1];//se è avvenuto il mismatch sull'indice i guarda alla posizione prima (ho scritto l'indice sull'inizio del suffisso)
+    	if (i+1<0) gs=-1;//per prevenire bug 
     	
+
+    	if (bc<=gs)
+    	{
+	    	cout << "Bad charapter <<"<< bc << endl;
+
+	    	if(bc >=0 && i>=0){
+	    					   //se bc=-1 significa che text[h] non occorre in P, se i =-1 significa che in questo turno ho trovato il pattern (NON HA SENSO APPLICARE LA bcr)
+	    		               //cout<< "BCR a ="<< a<< " i = " << i <<"\n";
+			j += i - bc;
+			h=j;			
+			}else{
+				if (bc==-1 && i>=0)
+				{	
+					h=j+ i+1; //hai trovato un
+					cout<< j+pattern.length()- i <<endl; 
+				}else{
+					h=j+1;
+				}
+			}
+
+    	}else{
+	    	cout << "Good suffix <<"<< gs << endl;
+
+    		if(gs >=0 && i>=0){
+    			j+=i-gs+1;
+    			h=j;
+    		}else{
+    			if (gs==-1 && i>=0)
+				{	
+					h=j+pattern.length(); //hai trovato un 
+				}else{
+					h=j+1;
+				}
+    		}
+    	}
+
+    	i = pattern.length()-1;
 
     }
     
 }
 
-
 // Driver program
 int main()
 {
-	string text = "aaaaaaaafffffffffffaaaaaaaaaaaaaafffffffffffaaaaaaaaaaaaaaffffffffffffffffaaaaaaaaaaaaaaafffafafafafafafafafafaf";
-    string pattern = "abcabcabcdabc";
+	string text = "aagaaagaaaaagaaaaafabcabccabcabccbbacbgbbacbgaaaaaaaaaaaabcabccbbacbgaaaaaaaaaaaaaa";
+    string pattern = "abcabccbgacbg";
 
-    cout << text << endl;
-    
 	searchBM(text,pattern);
-    
- 
 
     return 0;
 }
